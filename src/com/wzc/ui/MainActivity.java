@@ -11,6 +11,7 @@ public class MainActivity {
     private JButton btAddSmallestWidth;
     private JList list1;
     private JButton btCreateDirectory;
+    private JComboBox comboBox1;
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("MainActivity");
