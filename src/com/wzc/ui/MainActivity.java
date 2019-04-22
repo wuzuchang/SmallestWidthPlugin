@@ -7,7 +7,7 @@ import java.awt.event.ActionListener;
 public class MainActivity {
     private JPanel panel1;
     private JTextField draftSize;
-    private JTextField textField2;
+    private JTextField dpPxDpi160TextField;
     private JButton btAddSmallestWidth;
     private JList list1;
     private JButton btCreateDirectory;
