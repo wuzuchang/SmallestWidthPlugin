@@ -1,0 +1,37 @@
+<idea-plugin>
+  <id>com.wzc.sw.plugin</id>
+  <name>SmallestWidth Plug-in</name>
+  <version>1.0.0</version>
+  <vendor email="wuzuchang1994@gmail.com" url="http://www.w.com">wzc</vendor>
+
+  <description><![CDATA[
+      SmallestWidth Plug-in.<br>
+      <em>自动生成values-sw<N>dp文件夹及dimens.xml文件<br>
+      </em>
+    ]]></description>
+
+  <change-notes><![CDATA[
+      SmallestWidth插件1.0.0版本.<br>
+      <em>当前版本 v1.0.0<br>
+      如果又问题可联系QQ:403269514
+      </em>
+    ]]></change-notes>
+
+  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+  <idea-version since-build="173.0"/>
+
+  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+       on how to target different products -->
+  <!-- uncomment to enable plugin in all products
+  <depends>com.intellij.modules.lang</depends>
+  -->
+
+  <extensions defaultExtensionNs="com.intellij">
+    <!-- Add your extensions here -->
+  </extensions>
+
+  <actions>
+    <!-- Add your actions here -->
+  </actions>
+
+</idea-plugin>
