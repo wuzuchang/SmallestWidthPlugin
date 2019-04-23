@@ -7,6 +7,7 @@ import org.apache.http.util.TextUtils;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.regex.Pattern;
 
 public class SmallestWidthDialog extends JDialog {
     private Project mProject;
@@ -42,13 +43,25 @@ public class SmallestWidthDialog extends JDialog {
 
 
     private void generateDirectory() {
-        String sDesignWidth = designWidth.getText();
+        String sDesignWidth = designWidth.getText().trim();
         if (TextUtils.isEmpty(sDesignWidth)) {
             Messages.showMessageDialog(mProject,
                     "DesignWidth can't null",
                     "Warning",
                     Messages.getWarningIcon());
+            return;
         }
+        boolean b = Pattern.matches("([1-9]\\d*)(\\.\\d)?(\\d*)*", sDesignWidth);
+        if (!b) {
+            Messages.showMessageDialog(mProject,
+                    "Please enter the correct number",
+                    "Warning",
+                    Messages.getWarningIcon());
+            return;
+        }
+        ListModel fileListModel = fileList.getModel();
+        int size = fileListModel.getSize();
+
     }
 
     private void addSmallestWidth() {
