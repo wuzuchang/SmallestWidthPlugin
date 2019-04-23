@@ -1,21 +1,20 @@
 package com.wzc.ui;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class MainActivity {
-    private JPanel panel1;
-    private JTextField draftSize;
-    private JTextField dpPxDpi160TextField;
+    private JPanel contentPanel;
+    private JTextField designWidth;
+    private JTextField smallestWidth;
     private JButton btAddSmallestWidth;
-    private JList list1;
     private JButton btCreateDirectory;
     private JComboBox comboBox1;
+    private JButton btCancel;
+    private JList fileList;
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("MainActivity");
-        frame.setContentPane(new MainActivity().panel1);
+        frame.setContentPane(new MainActivity().contentPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
