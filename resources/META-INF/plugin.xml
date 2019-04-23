@@ -32,6 +32,11 @@
 
   <actions>
     <!-- Add your actions here -->
+    <action id="SmallestWidthPlugin.SmallestWidthAction" class="com.wzc.smallestwidth.SmallestWidthAction"
+            text="SmallestWidth" description="SmallestWidthPlugin automatic generation  values-sw&lt;N&gt;dp folder">
+      <add-to-group group-id="ToolsMenu" anchor="first"/>
+      <keyboard-shortcut keymap="$default" first-keystroke="alt P"/>
+    </action>
   </actions>
 
 </idea-plugin>
