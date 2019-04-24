@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 
 public class SmallestWidthDialog extends JDialog {
     private Project mProject;
-    private JPanel contentPanel;
+    private JPanel contentPane;
     private JTextField designWidth;
     private JTextField smallestWidth;
     private JButton btAddSmallestWidth;
@@ -24,8 +24,9 @@ public class SmallestWidthDialog extends JDialog {
     public SmallestWidthDialog(Project project) {
         if (project == null) return;
         this.mProject = project;
-        setContentPane(contentPanel);
+        setContentPane(contentPane);
         setModal(true);
+        getRootPane().setDefaultButton(btGenerateDirectory);
         setTitle("SmallestWidth Generator");
         btGenerateDirectory.addActionListener(e -> {
             generateDirectory();
@@ -39,6 +40,20 @@ public class SmallestWidthDialog extends JDialog {
                 dispose();
             }
         });
+        // call onCancel() when cross is clicked
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                dispose();
+            }
+        });
+
+        // call onCancel() on ESCAPE
+        contentPane.registerKeyboardAction(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     }
 
 
