@@ -15,9 +15,6 @@ public class SmallestWidthAction extends AnAction {
     @Override
     public void actionPerformed(AnActionEvent event) {
         Project project = event.getProject();
-        PsiFile psiFile = event.getData(CommonDataKeys.PSI_FILE);
-        Editor editor = event.getData(CommonDataKeys.EDITOR);
-        VirtualFile virtualFile = event.getData(CommonDataKeys.VIRTUAL_FILE);
         SmallestWidthDialog dialog = new SmallestWidthDialog(project);
         dialog.pack();
         dialog.setLocationRelativeTo(WindowManager.getInstance().getFrame(project));

@@ -3,7 +3,6 @@ package com.wzc.smallestwidth.ui;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
-import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
@@ -11,10 +10,8 @@ import com.intellij.psi.PsiManager;
 import com.wzc.smallestwidth.util.Utils;
 import org.apache.http.util.TextUtils;
 import org.dom4j.Document;
-import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -26,8 +23,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
-import static java.math.BigDecimal.ROUND_HALF_EVEN;
-import static java.math.BigDecimal.ROUND_HALF_UP;
 
 public class SmallestWidthDialog extends JDialog {
     private Project mProject;
@@ -40,7 +35,6 @@ public class SmallestWidthDialog extends JDialog {
     private JButton btCancel;
     private JList folderList;
     private JProgressBar progressBar;
-    //JList Model
     private DefaultListModel folderModel;
     ArrayList<String> defaultFoldData = new ArrayList<>(Arrays.asList("300", "320", "340", "360", "380", "400", "410", "420", "440", "460", "480", "500", "520"));
 
@@ -136,8 +130,9 @@ public class SmallestWidthDialog extends JDialog {
         }
         folderModel.addElement("values-sw" + inputSmallestWidth + "dp");
         defaultFoldData.add(inputSmallestWidth);
-        folderList.notify();
         smallestWidth.setText("");
+        folderList.notify();
+
     }
 
     private void generateDirectory() {
