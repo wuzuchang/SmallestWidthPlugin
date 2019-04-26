@@ -2,12 +2,8 @@ package com.wzc.smallestwidth;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.CommonDataKeys;
-import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.WindowManager;
-import com.intellij.psi.PsiFile;
 import com.wzc.smallestwidth.ui.SmallestWidthDialog;
 
 public class SmallestWidthAction extends AnAction {

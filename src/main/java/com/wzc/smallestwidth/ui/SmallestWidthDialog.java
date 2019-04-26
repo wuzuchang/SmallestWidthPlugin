@@ -223,7 +223,7 @@ public class SmallestWidthDialog extends JDialog {
     }
 
     /**
-     * 判断游戏xml文件内是否有同name的节点
+     * 判断xml文件内是否有同name的节点
      *
      * @param name        name
      * @param rootElement 根节点
