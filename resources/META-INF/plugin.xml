@@ -1,21 +1,18 @@
 <idea-plugin>
   <id>com.wzc.sw.plugin</id>
-  <name>SmallestWidth Plug-in</name>
-  <version>1.0.1</version>
+  <name>SmallestWidth Dimens</name>
+  <version>1.0.0</version>
   <vendor email="wuzuchang1994@gmail.com" url="https://github.com/wuzuchang/SmallestWidthPlugin">吴祖昌</vendor>
 
   <description><![CDATA[
-      SmallestWidth Plug-in.<br>
+      SmallestWidth Dimens.<br>
       <em>Can automatic generation values-sw<N>dp folder and dimens.xml file<br>
       </em>
     ]]></description>
 
   <change-notes><![CDATA[
-      SmallestWidth Plug-in v1.0.1.<br>
+      SmallestWidth Dimens v1.0.0.<br>
       <em>1.First version 1.0.0<br>
-      2.Latest version 1.0.1<br>
-      Fix a new dimes.xml file if there is no dimes.xml file under values folder<br>
-      Fix if dimens.xml file exists and dimens.xml is generated using the plugin, dimen node name is modified at the same time, if not added<br>
       </em>
     ]]></change-notes>
 
@@ -34,8 +31,8 @@
 
   <actions>
     <!-- Add your actions here -->
-    <action id="SmallestWidthPlugin.SmallestWidthAction" class="com.wzc.smallestwidth.SmallestWidthAction"
-            text="SmallestWidth" description="SmallestWidthPlugin automatic generation  values-sw&lt;N&gt;dp folder">
+    <action id="SmallestWidthDimens.SmallestWidthAction" class="com.wzc.smallestwidth.SmallestWidthAction"
+            text="SmallestWidth" description="SmallestWidthDimens automatic generation  values-sw&lt;N&gt;dp folder">
       <add-to-group group-id="ToolsMenu" anchor="first"/>
       <keyboard-shortcut keymap="$default" first-keystroke="alt P"/>
     </action>
