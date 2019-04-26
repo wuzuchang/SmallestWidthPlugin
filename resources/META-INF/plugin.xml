@@ -12,8 +12,10 @@
 
   <change-notes><![CDATA[
       SmallestWidth插件1.0.0版本.<br>
-      <em>当前版本 v1.0.0<br>
-      如果又问题可联系QQ:403269514
+      <em>1.初始版本V1.0.0<br>
+      2.当前版本V1.0.1<br>
+      修复values文件夹下沒有dimes.xml文件的情况新建dimes.xml<br>
+      修复如果dimes.xml文件存在使用插件生成dimens.xml，dimen节点name相同时修改，没有时新增<br>
       </em>
     ]]></change-notes>
 

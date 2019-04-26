@@ -10,8 +10,10 @@ import com.intellij.psi.PsiManager;
 import com.wzc.smallestwidth.util.Utils;
 import org.apache.http.util.TextUtils;
 import org.dom4j.Document;
+import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -21,6 +23,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.regex.Pattern;
 
 
@@ -105,9 +109,7 @@ public class SmallestWidthDialog extends JDialog {
         }
     }
 
-    /**
-     *
-     */
+
     private void setFolderList() {
         folderModel = new DefaultListModel();
         for (String dp : defaultFoldData) {
@@ -154,13 +156,13 @@ public class SmallestWidthDialog extends JDialog {
         }
         progressBar.setVisible(true);
         progressBar.setValue(0);
-
+        Collections.sort(this.defaultFoldData);
         double stage = 100 / defaultFoldData.size();
         for (int i = 0; i <= defaultFoldData.size(); i++) {
             String swFolderName;
             String sw_dp;
             if (i == defaultFoldData.size()) {
-                sw_dp = "360";
+                sw_dp = defaultFoldData.get(i - 1);
                 swFolderName = "values";
             } else {
                 sw_dp = defaultFoldData.get(i);
@@ -174,18 +176,43 @@ public class SmallestWidthDialog extends JDialog {
                 }
                 if (!file.exists()) {
                     file.createNewFile();
+                    Document dimensDocument = DocumentHelper.createDocument();
+                    Element resources = dimensDocument.addElement("resources");
+                    BigDecimal smallestWidthdp = new BigDecimal(sw_dp);
+                    BigDecimal designWidthpx = new BigDecimal(designWidth.getText());
+                    double dp = smallestWidthdp.divide(designWidthpx, 3, RoundingMode.HALF_EVEN).doubleValue();
+                    for (int j = 0; j <= Integer.valueOf(sw_dp); j++) {
+                        progressBar.setValue((int) (i * j * (stage / Integer.valueOf(sw_dp))));
+                        double value = dp * j;
+                        resources.addElement("dimen").addAttribute("name", "sw_" + j + "dp").addText(value + "dp");
+                    }
+                    Utils.writeXml(file, dimensDocument);
+                } else {
+                    try {
+                        SAXReader reader = new SAXReader();
+                        BigDecimal smallestWidthdp = new BigDecimal(sw_dp);
+                        BigDecimal designWidthpx = new BigDecimal(designWidth.getText());
+                        double dp = smallestWidthdp.divide(designWidthpx, 3, RoundingMode.HALF_EVEN).doubleValue();
+                        // 2.通过reader对象的read方法加载xml文件，获取Document对象
+                        Document document = reader.read(file);
+                        Element resources = document.getRootElement();// 通过document对象获取根节点resources
+                        for (int j = 0; j <= Integer.valueOf(sw_dp); j++) {
+                            progressBar.setValue((int) (i * j * (stage / Integer.valueOf(sw_dp))));
+                            double value = dp * j;
+                            String name = "sw_" + j + "dp";
+                            //判断当前有没有名字相同的 有就修改值，没有就新增
+                            Element element = distinct(name, resources);
+                            if (element != null) {
+                                element.setText(value + "dp");
+                            } else {
+                                resources.addElement("dimen").addAttribute("name", "sw_" + j + "dp").addText(value + "dp");
+                            }
+                        }
+                        Utils.writeXml(file, document);
+                    } catch (DocumentException e) {
+                        e.printStackTrace();
+                    }
                 }
-                Document dimensDocument = DocumentHelper.createDocument();
-                Element resources = dimensDocument.addElement("resources");
-                BigDecimal smallestWidthdp = new BigDecimal(sw_dp);
-                BigDecimal designWidthpx = new BigDecimal(designWidth.getText());
-                double dp = smallestWidthdp.divide(designWidthpx, 3, RoundingMode.HALF_EVEN).doubleValue();
-                for (int j = 0; j <= Integer.valueOf(sw_dp); j++) {
-                    progressBar.setValue((int) (i * j * (stage / Integer.valueOf(sw_dp))));
-                    double value = dp * j;
-                    resources.addElement("dimen").addAttribute("name", "sw_" + j + "dp").addText(value + "dp");
-                }
-                Utils.writeXml(file, dimensDocument);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -195,4 +222,28 @@ public class SmallestWidthDialog extends JDialog {
         dispose();
     }
 
+    /**
+     * 判断游戏xml文件内是否有同name的节点
+     *
+     * @param name        name
+     * @param rootElement 根节点
+     * @return dimensElement 有  null 没有
+     */
+    private Element distinct(String name, Element rootElement) {
+        Iterator<Element> dimensElementIterator = rootElement.elementIterator();
+        while (dimensElementIterator.hasNext()) {
+            Element dimensElement = dimensElementIterator.next();
+            if (!"dimen".equals(dimensElement.getName()))   //如果节点名字不一样就不用比较
+                continue;
+            try {
+                if (name.equals(dimensElement.attribute("name").getValue())) {
+//                    System.out.println("dimen.xml中有 name 是 " + name + "的dimen节点");
+                    return dimensElement;
+                }
+            } catch (NullPointerException e) {
+                return null;
+            }
+        }
+        return null;
+    }
 }
