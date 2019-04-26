@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>com.wzc.sw.plugin</id>
   <name>SmallestWidth Plug-in</name>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <vendor email="wuzuchang1994@gmail.com" url="https://github.com/wuzuchang/SmallestWidthPlugin">吴祖昌</vendor>
 
   <description><![CDATA[
