@@ -6,16 +6,16 @@
 
   <description><![CDATA[
       SmallestWidth Plug-in.<br>
-      <em>自动生成values-sw<N>dp文件夹及dimens.xml文件<br>
+      <em>Can automatic generation values-sw<N>dp folder and dimens.xml file<br>
       </em>
     ]]></description>
 
   <change-notes><![CDATA[
-      SmallestWidth插件1.0.0版本.<br>
-      <em>1.初始版本V1.0.0<br>
-      2.当前版本V1.0.1<br>
-      修复values文件夹下沒有dimes.xml文件的情况新建dimes.xml<br>
-      修复如果dimes.xml文件存在使用插件生成dimens.xml，dimen节点name相同时修改，没有时新增<br>
+      SmallestWidth Plug-in v1.0.1.<br>
+      <em>1.First version 1.0.0<br>
+      2.Latest version 1.0.1<br>
+      Fix a new dimes.xml file if there is no dimes.xml file under values folder<br>
+      Fix if dimens.xml file exists and dimens.xml is generated using the plugin, dimen node name is modified at the same time, if not added<br>
       </em>
     ]]></change-notes>
 
