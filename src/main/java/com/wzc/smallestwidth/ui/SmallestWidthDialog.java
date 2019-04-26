@@ -155,18 +155,6 @@ public class SmallestWidthDialog extends JDialog {
         progressBar.setVisible(true);
         progressBar.setValue(0);
 
-        String baseDimensPath = mProject.getBasePath() + File.separator + moduleName + File.separator + "src" + File.separator + "main" + File.separator + "res" + File.separator + "values" + File.separator + "dimens.xml";
-        File baseFile = new File(baseDimensPath);
-        if (!baseFile.exists()) {
-            try {
-                baseFile.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
-
-
         double stage = 100 / defaultFoldData.size();
         for (int i = 0; i <= defaultFoldData.size(); i++) {
             String swFolderName;
