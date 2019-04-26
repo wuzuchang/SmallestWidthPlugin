@@ -155,10 +155,30 @@ public class SmallestWidthDialog extends JDialog {
         progressBar.setVisible(true);
         progressBar.setValue(0);
 
+        String baseDimensPath = mProject.getBasePath() + File.separator + moduleName + File.separator + "src" + File.separator + "main" + File.separator + "res" + File.separator + "values" + File.separator + "dimens.xml";
+        File baseFile = new File(baseDimensPath);
+        if (!baseFile.exists()) {
+            try {
+                baseFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+
         double stage = 100 / defaultFoldData.size();
-        for (int i = 0; i < defaultFoldData.size(); i++) {
-            String sw = defaultFoldData.get(i);
-            String filePath = mProject.getBasePath() + File.separator + moduleName + File.separator + "src" + File.separator + "main" + File.separator + "res" + File.separator + "values-sw" + sw + "dp" + File.separator + "dimens.xml";
+        for (int i = 0; i <= defaultFoldData.size(); i++) {
+            String swFolderName;
+            String sw_dp;
+            if (i == defaultFoldData.size()) {
+                sw_dp = "360";
+                swFolderName = "values";
+            } else {
+                sw_dp = defaultFoldData.get(i);
+                swFolderName = "values-sw" + defaultFoldData.get(i) + "dp";
+            }
+            String filePath = mProject.getBasePath() + File.separator + moduleName + File.separator + "src" + File.separator + "main" + File.separator + "res" + File.separator + swFolderName + File.separator + "dimens.xml";
             try {
                 File file = new File(filePath);
                 if (!file.getParentFile().exists()) {
@@ -169,13 +189,13 @@ public class SmallestWidthDialog extends JDialog {
                 }
                 Document dimensDocument = DocumentHelper.createDocument();
                 Element resources = dimensDocument.addElement("resources");
-                BigDecimal smallestWidthdp = new BigDecimal(sw);
+                BigDecimal smallestWidthdp = new BigDecimal(sw_dp);
                 BigDecimal designWidthpx = new BigDecimal(designWidth.getText());
                 double dp = smallestWidthdp.divide(designWidthpx, 3, RoundingMode.HALF_EVEN).doubleValue();
-                for (int j = 0; j <= Integer.valueOf(sw); j++) {
-                    progressBar.setValue((int) ((i+1)*j*(stage/Integer.valueOf(sw))));
+                for (int j = 0; j <= Integer.valueOf(sw_dp); j++) {
+                    progressBar.setValue((int) (i * j * (stage / Integer.valueOf(sw_dp))));
                     double value = dp * j;
-                    resources.addElement("dimen").addAttribute("name", j + "_swdp").addText(value + "dp");
+                    resources.addElement("dimen").addAttribute("name", "sw_" + j + "dp").addText(value + "dp");
                 }
                 Utils.writeXml(file, dimensDocument);
             } catch (IOException e) {
