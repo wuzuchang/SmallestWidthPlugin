@@ -80,11 +80,25 @@ public class SmallestWidthDialog extends JDialog {
         if (settingGradleFile == null) return;
         PsiFile settingGradlePsiFile = PsiManager.getInstance(mProject).findFile(settingGradleFile);
         if (settingGradlePsiFile == null) return;
-        String includeString = settingGradlePsiFile.getText().trim();
+        String includeString = settingGradlePsiFile.getText();
         if (includeString.isEmpty()) return;
-        String[] moduleNameList = new String[0];
+        if (includeString.contains("include")) {
+            includeString = includeString.replaceAll("include", "");
+        }
+        if (includeString.contains(",")) {
+            includeString = includeString.replaceAll(",", "");
+        }
+        if (includeString.contains("\n")) {
+            includeString = includeString.replaceAll("\n", "");
+        }
         if (includeString.contains("'")) {
-            moduleNameList = includeString.replaceAll("'", "").split(":");
+            includeString = includeString.replaceAll("'", "");
+        }
+        if (includeString.contains(" ")) {
+            includeString = includeString.replaceAll(" ", "");
+        }
+        if (includeString.contains(":")) {
+            moduleNameList = includeString.split(":");
         }
         VirtualFile baseVirtualFile = LocalFileSystem.getInstance().findFileByPath(basePath);
         if (baseVirtualFile == null) return;
@@ -94,18 +108,14 @@ public class SmallestWidthDialog extends JDialog {
         }
         for (VirtualFile virtualFile : virtualFiles) {
             if (!virtualFile.isDirectory()) {
-                return;
+                continue;
             }
             String fileName = virtualFile.getName();
-            if (moduleNameList.length < 1) {
-                return;
-            }
             for (int i = 1; i < moduleNameList.length; i++) {
                 if (moduleNameList[i].trim().equals(fileName)) {
                     cbModuleName.addItem(fileName);
                 }
             }
-
         }
     }
 

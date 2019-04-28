@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>com.wzc.sw.plugin</id>
   <name>SmallestWidth Dimens</name>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <vendor email="wuzuchang1994@gmail.com" url="https://github.com/wuzuchang/SmallestWidthPlugin">吴祖昌</vendor>
 
   <description><![CDATA[
@@ -13,6 +13,8 @@
   <change-notes><![CDATA[
       SmallestWidth Dimens v1.0.0.<br>
       <em>1.First version 1.0.0<br>
+      2.Latest version 1.0.1
+      Fixed module name failure under multiple modules
       </em>
     ]]></change-notes>
 
