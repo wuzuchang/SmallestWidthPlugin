@@ -76,21 +76,21 @@ public class SmallestWidthDialog extends JDialog {
         System.out.println(basePath);
         if (TextUtils.isEmpty(basePath)) {
             cbModuleName.addItem("The BasePath is null");
-            return
-        } ;
+            return;
+        } 
         String settingGradlePath = basePath + File.separator + "settings.gradle";
         VirtualFile settingGradleFile = LocalFileSystem.getInstance().findFileByPath(settingGradlePath);
         if (settingGradleFile == null) {
             cbModuleName.addItem("Unfound settings.gradle file");
-            return
-        } ;
+            return;
+        } 
         PsiFile settingGradlePsiFile = PsiManager.getInstance(mProject).findFile(settingGradleFile);
         if (settingGradlePsiFile == null) return;
         String includeString = settingGradlePsiFile.getText();
         if (includeString.isEmpty()) {
             cbModuleName.addItem("settings.gradle file content is null");
-            return
-        } ;
+            return;
+        } 
         if (includeString.contains("include")) {
             includeString = includeString.replaceAll("include", "");
         }
@@ -106,14 +106,15 @@ public class SmallestWidthDialog extends JDialog {
         if (includeString.contains(" ")) {
             includeString = includeString.replaceAll(" ", "");
         }
+        String[] moduleNameList = new String[0];
         if (includeString.contains(":")) {
             moduleNameList = includeString.split(":");
         }
         VirtualFile baseVirtualFile = LocalFileSystem.getInstance().findFileByPath(basePath);
         if (baseVirtualFile == null) {
             cbModuleName.addItem("There are no files in the folder " + basePath);
-            return
-        } ;
+            return;
+        } 
         VirtualFile[] virtualFiles = baseVirtualFile.getChildren();
         if (virtualFiles == null || virtualFiles.length <= 0) {
             cbModuleName.addItem("There are no files in the folder " + basePath);
