@@ -1,44 +1,48 @@
 <idea-plugin>
-  <id>com.wzc.sw.plugin</id>
-  <name>SmallestWidth Dimens</name>
-  <version>1.0.1</version>
-  <vendor email="wuzuchang1994@gmail.com" url="https://github.com/wuzuchang/SmallestWidthPlugin">吴祖昌</vendor>
+    <id>com.wzc.sw.plugin</id>
+    <name>SmallestWidth Dimens</name>
+    <version>1.0.1</version>
+    <vendor email="wuzuchang1994@gmail.com" url="https://github.com/wuzuchang/SmallestWidthPlugin">吴祖昌</vendor>
 
-  <description><![CDATA[
+    <description><![CDATA[
       SmallestWidth Dimens.<br>
-      <em>Can automatic generation values-sw<N>dp folder and dimens.xml file<br>
+      <em>Can automatic generation values-sw\<N\>dp folder and dimens.xml file<br>
+      一款可一键生成values-sw\<N\>dp文件夹和dimens.xml文件的插件。<br>
+      <image src="/images/smallestWidthUI.png">
       </em>
     ]]></description>
 
-  <change-notes><![CDATA[
-      SmallestWidth Dimens v1.0.0.<br>
-      <em>1.First version 1.0.0<br>
-      2.Latest version 1.0.1<br>
-      Fixed module name failure under multiple modules
+    <change-notes><![CDATA[
+      <em>
+       1.0.1：<br>
+      <li>Fixed module name failure under multiple modules</li>
+       1.0.0：<br>
+      <li> First version </li>
       </em>
     ]]></change-notes>
 
-  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-  <idea-version since-build="173.0"/>
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+    <idea-version since-build="173.0"/>
 
-  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
-       on how to target different products -->
-  <!-- uncomment to enable plugin in all products
-  <depends>com.intellij.modules.lang</depends>
-  -->
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    <depends>com.intellij.modules.lang</depends>
+    -->
 
-  <extensions defaultExtensionNs="com.intellij">
-    <!-- Add your extensions here -->
-  </extensions>
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+    </extensions>
 
-  <actions>
-    <!-- Add your actions here -->
-    <action id="SmallestWidthDimens.SmallestWidthAction" class="com.wzc.smallestwidth.SmallestWidthAction"
-            text="SmallestWidth" description="SmallestWidthDimens automatic generation  values-sw&lt;N&gt;dp folder">
-      <add-to-group group-id="ToolsMenu" anchor="first"/>
-      <keyboard-shortcut keymap="$default" first-keystroke="alt P"/>
-    </action>
-  </actions>
+    <actions>
+        <!-- Add your actions here -->
+        <action id="SmallestWidthDimens.SmallestWidthAction" class="com.wzc.smallestwidth.SmallestWidthAction"
+                text="SmallestWidth"
+                description="SmallestWidthDimens automatic generation  values-sw&lt;N&gt;dp folder">
+            <add-to-group group-id="ToolsMenu" anchor="first"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="alt P"/>
+        </action>
+    </actions>
 
-  <depends>com.intellij.modules.java</depends>
+    <depends>com.intellij.modules.java</depends>
 </idea-plugin>
