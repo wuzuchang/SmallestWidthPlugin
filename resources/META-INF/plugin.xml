@@ -1,14 +1,14 @@
 <idea-plugin>
     <id>com.wzc.sw.plugin</id>
     <name>SmallestWidth Dimens</name>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <vendor email="wuzuchang1994@gmail.com" url="https://github.com/wuzuchang/SmallestWidthPlugin">吴祖昌</vendor>
 
     <description><![CDATA[
       SmallestWidth Dimens.<br>
       <em>The plugin can be selected to generate the values-sw&lt;N&gt;dp folder and dimens.xml files by any module.<br>
       一款可以选择再任意module下一键生成values-sw&lt;N&gt;dp文件夹和dimens.xml文件的插件。<br>
-      Shortcut key : ALT+P or  Tools &Iota; SmallestWidth
+      Shortcut key : ALT+P or  Tools &Iota; SmallestWidth<br>
       <image src="https://raw.githubusercontent.com/wuzuchang/SmallestWidthPlugin/master/images/usePlugin.png"><br>
       <image src="https://raw.githubusercontent.com/wuzuchang/SmallestWidthPlugin/master/images/smallestWidthUI.png"><br>
       <image src="https://raw.githubusercontent.com/wuzuchang/SmallestWidthPlugin/master/images/GenerateDimens.png">
@@ -17,6 +17,11 @@
 
     <change-notes><![CDATA[
       <em>
+      <ul>
+       	1.0.3：<br>
+      <li>Add methods using plugins and describe images</li>
+      <li>加入使用插件方法和描述图片</li><br>
+      </ul>
       <ul>
        	1.0.2：<br>
       <li>Modify the plug-in description</li>
