@@ -1,23 +1,35 @@
 <idea-plugin>
     <id>com.wzc.sw.plugin</id>
     <name>SmallestWidth Dimens</name>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <vendor email="wuzuchang1994@gmail.com" url="https://github.com/wuzuchang/SmallestWidthPlugin">吴祖昌</vendor>
 
     <description><![CDATA[
       SmallestWidth Dimens.<br>
-      <em>Can automatic generation values-sw\<N\>dp folder and dimens.xml file<br>
-      一款可一键生成values-sw\<N\>dp文件夹和dimens.xml文件的插件。<br>
-      <image src="/images/smallestWidthUI.png">
+      <em>The plugin can be selected to generate the values-sw&lt;N&gt;dp folder and dimens.xml files by any module.<br>
+      一款可以选择再任意module下一键生成values-sw&lt;N&gt;dp文件夹和dimens.xml文件的插件。<br>
+      <image src="https://raw.githubusercontent.com/wuzuchang/SmallestWidthPlugin/master/images/smallestWidthUI.png"><br>
+      <image src="https://raw.githubusercontent.com/wuzuchang/SmallestWidthPlugin/master/images/GenerateDimens.png">
       </em>
     ]]></description>
 
     <change-notes><![CDATA[
       <em>
+      <ul>
+       	1.0.2：<br>
+      <li>Modify the plug-in description</li>
+      <li>修改插件描述</li><br>
+      </ul>
+      <ul>
        1.0.1：<br>
       <li>Fixed module name failure under multiple modules</li>
+      <li>修正了多个模块下的模块名称错误</li><br>
+      </ul>
+      <ul>
        1.0.0：<br>
-      <li> First version </li>
+      <li>First version </li>
+      <li>最初版本 </li>
+      </ul>
       </em>
     ]]></change-notes>
 
