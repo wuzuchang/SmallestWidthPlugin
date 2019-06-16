@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>com.wzc.sw.plugin</id>
     <name>SmallestWidth Dimens</name>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
     <vendor email="wuzuchang1994@gmail.com" url="https://github.com/wuzuchang/SmallestWidthPlugin">吴祖昌</vendor>
 
     <description><![CDATA[
@@ -18,19 +18,26 @@
     <change-notes><![CDATA[
       <em>
       <ul>
+       	1.0.4：<br>
+      <li>Increase negative value option</li>
+      <li>增加负值选项</li>
+      <li>负数表示为：_sw_8dp</li>
+      <li>正数表示为：sw_8dp</li>
+      </ul>
+      <ul>
        	1.0.3：<br>
       <li>Add methods using plugins and describe images</li>
-      <li>加入使用插件方法和描述图片</li><br>
+      <li>加入使用插件方法和描述图片</li>
       </ul>
       <ul>
        	1.0.2：<br>
       <li>Modify the plug-in description</li>
-      <li>修改插件描述</li><br>
+      <li>修改插件描述</li>
       </ul>
       <ul>
        1.0.1：<br>
       <li>Fixed module name failure under multiple modules</li>
-      <li>修正了多个模块下的模块名称错误</li><br>
+      <li>修正了多个模块下的模块名称错误</li>
       </ul>
       <ul>
        1.0.0：<br>

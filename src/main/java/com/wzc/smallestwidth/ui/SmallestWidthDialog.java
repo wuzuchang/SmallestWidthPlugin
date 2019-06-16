@@ -38,7 +38,6 @@ public class SmallestWidthDialog extends JDialog {
     private JComboBox<String> cbModuleName;
     private JButton btCancel;
     private JList folderList;
-    private JProgressBar progressBar;
     private DefaultListModel folderModel;
     ArrayList<String> defaultFoldData = new ArrayList<>(Arrays.asList("300", "320", "340", "360", "380", "400", "410", "420", "440", "460", "480", "500", "520"));
 
@@ -77,20 +76,20 @@ public class SmallestWidthDialog extends JDialog {
         if (TextUtils.isEmpty(basePath)) {
             cbModuleName.addItem("The BasePath is null");
             return;
-        } 
+        }
         String settingGradlePath = basePath + File.separator + "settings.gradle";
         VirtualFile settingGradleFile = LocalFileSystem.getInstance().findFileByPath(settingGradlePath);
         if (settingGradleFile == null) {
             cbModuleName.addItem("Unfound settings.gradle file");
             return;
-        } 
+        }
         PsiFile settingGradlePsiFile = PsiManager.getInstance(mProject).findFile(settingGradleFile);
         if (settingGradlePsiFile == null) return;
         String includeString = settingGradlePsiFile.getText();
         if (includeString.isEmpty()) {
             cbModuleName.addItem("settings.gradle file content is null");
             return;
-        } 
+        }
         if (includeString.contains("include")) {
             includeString = includeString.replaceAll("include", "");
         }
@@ -114,7 +113,7 @@ public class SmallestWidthDialog extends JDialog {
         if (baseVirtualFile == null) {
             cbModuleName.addItem("There are no files in the folder " + basePath);
             return;
-        } 
+        }
         VirtualFile[] virtualFiles = baseVirtualFile.getChildren();
         if (virtualFiles == null || virtualFiles.length <= 0) {
             cbModuleName.addItem("There are no files in the folder " + basePath);
@@ -178,8 +177,6 @@ public class SmallestWidthDialog extends JDialog {
             Utils.showWarningDialog(mProject, "Please enter the correct number", "Warning");
             return;
         }
-        progressBar.setVisible(true);
-        progressBar.setValue(0);
         Collections.sort(this.defaultFoldData);
         double stage = 100 / defaultFoldData.size();
         for (int i = 0; i <= defaultFoldData.size(); i++) {
@@ -205,10 +202,18 @@ public class SmallestWidthDialog extends JDialog {
                     BigDecimal smallestWidthdp = new BigDecimal(sw_dp);
                     BigDecimal designWidthpx = new BigDecimal(designWidth.getText());
                     double dp = smallestWidthdp.divide(designWidthpx, 3, RoundingMode.HALF_EVEN).doubleValue();
-                    for (int j = 0; j <= Integer.valueOf(sw_dp); j++) {
-                        progressBar.setValue((int) (i * j * (stage / Integer.valueOf(sw_dp))));
-                        double value = dp * j;
-                        resources.addElement("dimen").addAttribute("name", "sw_" + j + "dp").addText(value + "dp");
+                    int max_dp = Integer.valueOf(sw_dp);
+                    int start_dp = -max_dp;
+                    for (int j = start_dp; j <= max_dp; j++) {
+                        double data = dp * j;
+                        BigDecimal bigDecimal = new BigDecimal(data);
+                        double value = bigDecimal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                        if (j<0){
+                            resources.addElement("dimen").addAttribute("name", "_sw_" + Math.abs(j) + "dp").addText(value + "dp");
+                        }else {
+                            resources.addElement("dimen").addAttribute("name", "sw_" + j + "dp").addText(value + "dp");
+                        }
+
                     }
                     Utils.writeXml(file, dimensDocument);
                 } else {
@@ -220,16 +225,23 @@ public class SmallestWidthDialog extends JDialog {
                         // 2.通过reader对象的read方法加载xml文件，获取Document对象
                         Document document = reader.read(file);
                         Element resources = document.getRootElement();// 通过document对象获取根节点resources
-                        for (int j = 0; j <= Integer.valueOf(sw_dp); j++) {
-                            progressBar.setValue((int) (i * j * (stage / Integer.valueOf(sw_dp))));
-                            double value = dp * j;
+                        int max_dp = Integer.valueOf(sw_dp);
+                        int start_dp = -max_dp;
+                        for (int j = start_dp; j <= max_dp; j++) {
+                            double data = dp * j;
+                            BigDecimal bigDecimal = new BigDecimal(data);
+                            double value = bigDecimal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
                             String name = "sw_" + j + "dp";
                             //判断当前有没有名字相同的 有就修改值，没有就新增
                             Element element = distinct(name, resources);
                             if (element != null) {
                                 element.setText(value + "dp");
                             } else {
-                                resources.addElement("dimen").addAttribute("name", "sw_" + j + "dp").addText(value + "dp");
+                                if (j<0){
+                                    resources.addElement("dimen").addAttribute("name", "_sw_" + Math.abs(j) + "dp").addText(value + "dp");
+                                }else {
+                                    resources.addElement("dimen").addAttribute("name", "sw_" + j + "dp").addText(value + "dp");
+                                }
                             }
                         }
                         Utils.writeXml(file, document);
@@ -241,7 +253,6 @@ public class SmallestWidthDialog extends JDialog {
                 e.printStackTrace();
             }
         }
-        progressBar.setValue(100);
         ProjectManager.getInstance().reloadProject(mProject);//刷新目录
         dispose();
     }
