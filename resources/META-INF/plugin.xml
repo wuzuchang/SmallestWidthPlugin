@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>com.wzc.sw.plugin</id>
     <name>SmallestWidth Dimens</name>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <vendor email="wuzuchang1994@gmail.com" url="https://github.com/wuzuchang/SmallestWidthPlugin">吴祖昌</vendor>
 
     <description><![CDATA[
@@ -17,6 +17,13 @@
 
     <change-notes><![CDATA[
       <em>
+      <ul>
+       	1.0.5：<br>
+      <li>Repair the size of the design document and generate a negative value of the file <dimen> tag name attribute value duplicate problem</li>
+      <li>Modify the maximum calculation rule for the <dimen> tag in the dimens.xml file</li>
+      <li>修复修改设计稿尺寸后生成文件负值<dimen>标签下name属性值重复问题</li>
+      <li>修改dimens.xml文件中<dimen>标签的最大值计算规则</li>
+      </ul>
       <ul>
        	1.0.4：<br>
       <li>Increase negative value option</li>

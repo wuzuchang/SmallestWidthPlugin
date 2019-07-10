@@ -38,8 +38,9 @@ public class SmallestWidthDialog extends JDialog {
     private JComboBox<String> cbModuleName;
     private JButton btCancel;
     private JList folderList;
+    private JProgressBar progressBar;
     private DefaultListModel folderModel;
-    ArrayList<String> defaultFoldData = new ArrayList<>(Arrays.asList("300", "320", "340", "360", "380", "400", "410", "420", "440", "460", "480", "500", "520"));
+    private ArrayList<String> defaultFoldData = new ArrayList<>(Arrays.asList("300", "320", "340", "360", "380", "400", "410", "420", "440", "460", "480", "500", "520"));
 
     public SmallestWidthDialog(Project project) {
         if (project == null) return;
@@ -48,16 +49,12 @@ public class SmallestWidthDialog extends JDialog {
         setModal(true);
         getRootPane().setDefaultButton(btGenerateDirectory);
         setTitle("SmallestWidth Generator");
-
+//        progressBar.setStringPainted(true);
         getModuleName();
 
         setFolderList();
-        btGenerateDirectory.addActionListener(e -> {
-            generateDirectory();
-        });
-        btAddSmallestWidth.addActionListener(e -> {
-            addSmallestWidth();
-        });
+        btGenerateDirectory.addActionListener(e -> generateDirectory());
+        btAddSmallestWidth.addActionListener(e -> addSmallestWidth());
         btCancel.addActionListener(e -> dispose());
         // call onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -166,7 +163,6 @@ public class SmallestWidthDialog extends JDialog {
             Utils.showWarningDialog(mProject, "Not found Module", "Warning");
             return;
         }
-
         String sDesignWidth = designWidth.getText().trim();
         if (TextUtils.isEmpty(sDesignWidth)) {
             Utils.showWarningDialog(mProject, "DesignWidth can't null", "Warning");
@@ -177,84 +173,92 @@ public class SmallestWidthDialog extends JDialog {
             Utils.showWarningDialog(mProject, "Please enter the correct number", "Warning");
             return;
         }
-        Collections.sort(this.defaultFoldData);
-        double stage = 100 / defaultFoldData.size();
-        for (int i = 0; i <= defaultFoldData.size(); i++) {
-            String swFolderName;
-            String sw_dp;
-            if (i == defaultFoldData.size()) {
-                sw_dp = defaultFoldData.get(i - 1);
-                swFolderName = "values";
-            } else {
-                sw_dp = defaultFoldData.get(i);
-                swFolderName = "values-sw" + defaultFoldData.get(i) + "dp";
-            }
-            String filePath = mProject.getBasePath() + File.separator + moduleName + File.separator + "src" + File.separator + "main" + File.separator + "res" + File.separator + swFolderName + File.separator + "dimens.xml";
-            try {
-                File file = new File(filePath);
-                if (!file.getParentFile().exists()) {
-                    file.getParentFile().mkdirs();
-                }
-                if (!file.exists()) {
-                    file.createNewFile();
-                    Document dimensDocument = DocumentHelper.createDocument();
-                    Element resources = dimensDocument.addElement("resources");
-                    BigDecimal smallestWidthdp = new BigDecimal(sw_dp);
-                    BigDecimal designWidthpx = new BigDecimal(designWidth.getText());
-                    double dp = smallestWidthdp.divide(designWidthpx, 3, RoundingMode.HALF_EVEN).doubleValue();
-                    int max_dp = Integer.valueOf(sw_dp);
-                    int start_dp = -max_dp;
-                    for (int j = start_dp; j <= max_dp; j++) {
-                        double data = dp * j;
-                        BigDecimal bigDecimal = new BigDecimal(data);
-                        double value = bigDecimal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-                        if (j<0){
-                            resources.addElement("dimen").addAttribute("name", "_sw_" + Math.abs(j) + "dp").addText(value + "dp");
-                        }else {
-                            resources.addElement("dimen").addAttribute("name", "sw_" + j + "dp").addText(value + "dp");
-                        }
-
-                    }
-                    Utils.writeXml(file, dimensDocument);
+        progressBar.setVisible(true);
+        progressBar.setValue(0);
+        new Thread(() -> {
+            Collections.sort(defaultFoldData); //将sw<N>dp文件夹排序
+            double stage = 100 / defaultFoldData.size();  //要生成多少个文件夹就将进度条分为多少个阶段
+            for (int i = 0; i <= defaultFoldData.size(); i++) {
+                String swFolderName;
+                String sw_dp;    //文件夹sw<N>dp中的N
+                if (i == defaultFoldData.size()) {
+                    sw_dp = defaultFoldData.get(i - 1);
+                    swFolderName = "values";
                 } else {
-                    try {
-                        SAXReader reader = new SAXReader();
+                    sw_dp = defaultFoldData.get(i);
+                    swFolderName = "values-sw" + defaultFoldData.get(i) + "dp";
+                }
+                int smallestWidth_dp = Integer.valueOf(sw_dp);  //将文件夹sw<N>dp 中的 N 转化为int
+                int designWidth_dp = Integer.valueOf(designWidth.getText());  //将输入的设计稿最小尺寸
+                int max_dp = Math.max(smallestWidth_dp, designWidth_dp) * 2;   //N 和 设计稿尺寸中取大的 然后X2作为 dimen 的最大值
+                int start_dp = -max_dp;
+                String filePath = mProject.getBasePath() + File.separator + moduleName + File.separator + "src" + File.separator + "main" + File.separator + "res" + File.separator + swFolderName + File.separator + "dimens.xml";
+                try {
+                    File file = new File(filePath);
+                    if (!file.getParentFile().exists()) {
+                        file.getParentFile().mkdirs();
+                    }
+                    if (!file.exists()) {
+                        file.createNewFile();
+                        Document dimensDocument = DocumentHelper.createDocument();
+                        Element resources = dimensDocument.addElement("resources");
                         BigDecimal smallestWidthdp = new BigDecimal(sw_dp);
                         BigDecimal designWidthpx = new BigDecimal(designWidth.getText());
                         double dp = smallestWidthdp.divide(designWidthpx, 3, RoundingMode.HALF_EVEN).doubleValue();
-                        // 2.通过reader对象的read方法加载xml文件，获取Document对象
-                        Document document = reader.read(file);
-                        Element resources = document.getRootElement();// 通过document对象获取根节点resources
-                        int max_dp = Integer.valueOf(sw_dp);
-                        int start_dp = -max_dp;
                         for (int j = start_dp; j <= max_dp; j++) {
                             double data = dp * j;
                             BigDecimal bigDecimal = new BigDecimal(data);
                             double value = bigDecimal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-                            String name = "sw_" + j + "dp";
-                            //判断当前有没有名字相同的 有就修改值，没有就新增
-                            Element element = distinct(name, resources);
-                            if (element != null) {
-                                element.setText(value + "dp");
+                            if (j < 0) {
+                                resources.addElement("dimen").addAttribute("name", "_sw_" + Math.abs(j) + "dp").addText(value + "dp");
                             } else {
-                                if (j<0){
-                                    resources.addElement("dimen").addAttribute("name", "_sw_" + Math.abs(j) + "dp").addText(value + "dp");
-                                }else {
-                                    resources.addElement("dimen").addAttribute("name", "sw_" + j + "dp").addText(value + "dp");
-                                }
+                                resources.addElement("dimen").addAttribute("name", "sw_" + j + "dp").addText(value + "dp");
                             }
                         }
-                        Utils.writeXml(file, document);
-                    } catch (DocumentException e) {
-                        e.printStackTrace();
+                        Utils.writeXml(file, dimensDocument);
+                    } else {
+                        try {
+                            SAXReader reader = new SAXReader();
+                            BigDecimal smallestWidthdp = new BigDecimal(sw_dp);
+                            BigDecimal designWidthpx = new BigDecimal(designWidth.getText());
+                            double dp = smallestWidthdp.divide(designWidthpx, 3, RoundingMode.HALF_EVEN).doubleValue();
+                            // 2.通过reader对象的read方法加载xml文件，获取Document对象
+                            Document document = reader.read(file);
+                            Element resources = document.getRootElement();// 通过document对象获取根节点resources
+                            for (int j = start_dp; j <= max_dp; j++) {
+                                double data = dp * j;
+                                BigDecimal bigDecimal = new BigDecimal(data);
+                                double value = bigDecimal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                                String name;
+                                if (j < 0) {
+                                    name = "sw_" + Math.abs(j) + "dp";
+                                } else {
+                                    name = "_sw_" + j + "dp";
+                                }
+                                //判断当前有没有名字相同的 有就修改值，没有就新增
+                                Element element = distinct(name, resources);
+                                if (element != null) {
+                                    element.setText(value + "dp");
+                                } else {
+                                    resources.addElement("dimen").addAttribute("name", name).addText(value + "dp");
+                                }
+                            }
+                            Utils.writeXml(file, document);
+                        } catch (DocumentException e) {
+                            e.printStackTrace();
+                        }
                     }
+                    progressBar.setValue((int) (i *stage));
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+
             }
-        }
-        ProjectManager.getInstance().reloadProject(mProject);//刷新目录
-        dispose();
+            ProjectManager.getInstance().reloadProject(mProject);//刷新目录
+            dispose();
+        }).start();
+
+
     }
 
     /**
