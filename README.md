@@ -10,10 +10,9 @@
 
 ![Image text](images/smallestWidthUI.png)
 
-
-1.插件启动后可自主选择要在那个moudel下生成values-sw\<N\>dp文件夹;
-2.默认列表内有一些文件夹，你也可以通过Add smallestWidth添加需要的尺寸;
-3.Design Width 为你设计稿的尺寸是必填项。
+    1.插件启动后可自主选择要在那个moudel下生成values-sw\<N\>dp文件夹;
+    2.默认列表内有一些文件夹，你也可以通过Add smallestWidth添加需要的尺寸;
+    3.Design Width 为你设计稿的尺寸是必填项。
 
 
 1.在values文件夹下
