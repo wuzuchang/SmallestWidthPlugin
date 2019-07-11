@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>com.wzc.sw.plugin</id>
     <name>SmallestWidth Dimens</name>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
     <vendor email="wuzuchang1994@gmail.com" url="https://github.com/wuzuchang/SmallestWidthPlugin">吴祖昌</vendor>
 
     <description><![CDATA[
@@ -17,6 +17,14 @@
 
     <change-notes><![CDATA[
       <em>
+      <ul>
+       	1.0.6：<br>
+      <li>If there is a values-sw&lt;N&gt;dp folder under the res folder, read the list under the res file, otherwise use the default list.</li>
+      <li>Increase sp unit,For font size adaptation</li>
+      <li>如果res文件夹下有values-sw&lt;N&gt;dp文件夹就读取res文件下列表，否则使用默认列表</li>
+      <li>增加sp单位，用于字体大小适配</li>
+      <li>E.g: android:testSize = "@dimen/sw_20sp"</li>
+      </ul>
       <ul>
        	1.0.5：<br>
       <li>Repair the size of the design document and generate a negative value of the file <dimen> tag name attribute value duplicate problem</li>
