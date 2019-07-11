@@ -11,8 +11,8 @@
 ![Image text](images/smallestWidthUI.png)
 
     1.插件启动后可自主选择要在那个moudel下生成values-sw\<N\>dp文件夹;
-    2.默认列表内有一些文件夹，你也可以通过Add smallestWidth添加需要的尺寸;
-    3.Design Width 为你设计稿的尺寸是必填项。
+    2.通过Add smallestWidth添加需要的屏幕最小尺寸，如540，则会生成values-sw540dp文件夹
+    3.Design Width 为你设计稿的尺寸，如设计稿最小宽度为1080px,则输入1080
 
 
 1.在values文件夹下
