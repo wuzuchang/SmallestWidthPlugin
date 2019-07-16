@@ -65,7 +65,7 @@ public class SmallestWidthDialog extends JDialog {
         contentPane.registerKeyboardAction(e -> dispose(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     }
 
-    private void selectModuleName(){
+    private void selectModuleName() {
         setFolderList();
     }
 
@@ -142,39 +142,55 @@ public class SmallestWidthDialog extends JDialog {
         // get the folder list
         File[] fileArray = resFile.listFiles();
         folderModel = new DefaultListModel();
+        List<String> fileNameList = new ArrayList<>();
         if (fileArray == null || fileArray.length <= 0) {
             for (int dp : defaultFoldData) {
                 folderModel.addElement("values-sw" + dp + "dp");
             }
-            folderList.setModel(folderModel);
         } else {
-            for (File childFile : fileArray) {
-                String childFileName = childFile.getName();
-                if (childFileName.contains("values-sw")) {
-                    folderModel.addElement(childFileName);
+            for (File file : fileArray) {
+                fileNameList.add(file.getName());
+            }
+            for (String fileName : fileNameList) {
+                if (fileName.contains("values-sw")) {
+                    folderModel.addElement(fileName);
                 }
             }
-            folderList.setModel(folderModel);
+            if (folderModel.getSize() <= 0) {
+                for (int dp : defaultFoldData) {
+                    folderModel.addElement("values-sw" + dp + "dp");
+                }
+            }
         }
+        folderList.setModel(folderModel);
     }
 
     private void addSmallestWidth() {
         String inputSmallestWidth = smallestWidth.getText().trim();
         if (TextUtils.isEmpty(inputSmallestWidth)) return;
-        boolean b = Pattern.matches("^([1-9]\\d{2})|([1-9]\\d{3})", inputSmallestWidth);
-        if (!b) {
-            Utils.showWarningDialog(mProject, "Please enter a correct number,99 < number < 10000", "Warning");
-            return;
+        String[] addString;
+        if (inputSmallestWidth.contains(",")) {
+            addString = inputSmallestWidth.split(",");
+        } else if (inputSmallestWidth.contains("，")) {
+            addString = inputSmallestWidth.split("，");
+        } else {
+            addString = new String[]{inputSmallestWidth};
         }
-        if (folderModel.contains("values-sw" + inputSmallestWidth + "dp")) {
-            Utils.showWarningDialog(mProject, "It's already in the default list", "Warning");
-            return;
+        for (String dp : addString) {
+            boolean b = Pattern.matches("^([1-9]\\d{2})|([1-9]\\d{3})", dp);
+            if (!b) {
+                Utils.showWarningDialog(mProject, dp + " is not a correct number,99 < number < 10000", "Warning");
+                continue;
+            }
+            if (folderModel.contains("values-sw" + dp + "dp")) {
+                Utils.showWarningDialog(mProject, dp + " it's already in the default list", "Warning");
+                continue;
+            }
+            folderModel.addElement("values-sw" + dp + "dp");
+            defaultFoldData.add(Integer.valueOf(dp));
         }
-        folderModel.addElement("values-sw" + inputSmallestWidth + "dp");
-        defaultFoldData.add(Integer.valueOf(inputSmallestWidth));
         smallestWidth.setText("");
         folderList.notify();
-
     }
 
     private void generateDirectory() {
@@ -245,7 +261,7 @@ public class SmallestWidthDialog extends JDialog {
                                 resources.addElement("dimen").addAttribute("name", "sw_" + j + "dp").addText(value + "dp");
                             }
                         }
-                        for (int sp = 1; sp <= 40; sp++) {
+                        for (int sp = 1; sp <= 60; sp++) {
                             double sp_value = dp * sp;
                             BigDecimal bigDecimal = new BigDecimal(sp_value);
                             double value = bigDecimal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
@@ -279,7 +295,7 @@ public class SmallestWidthDialog extends JDialog {
                                     resources.addElement("dimen").addAttribute("name", name).addText(value + "dp");
                                 }
                             }
-                            for (int sp = 1; sp <= 40; sp++) {
+                            for (int sp = 1; sp <= 60; sp++) {
                                 double sp_value = dp * sp;
                                 BigDecimal bigDecimal = new BigDecimal(sp_value);
                                 double value = bigDecimal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();

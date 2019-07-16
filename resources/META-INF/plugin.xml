@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>com.wzc.sw.plugin</id>
     <name>SmallestWidth Dimens</name>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
     <vendor email="wuzuchang1994@gmail.com" url="https://github.com/wuzuchang/SmallestWidthPlugin">吴祖昌</vendor>
 
     <description><![CDATA[
@@ -17,6 +17,11 @@
 
     <change-notes><![CDATA[
       <em>
+      <ul>
+       	1.0.7：<br>
+      <li>Fix bug</li>
+      <li>修复bug</li>
+      </ul>
       <ul>
        	1.0.6：<br>
       <li>If there is a values-sw&lt;N&gt;dp folder under the res folder, read the list under the res file, otherwise use the default list.</li>
