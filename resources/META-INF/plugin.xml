@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>com.wzc.sw.plugin</id>
     <name>SmallestWidth Dimens</name>
-    <version>1.0.7</version>
+    <version>1.0.8</version>
     <vendor email="wuzuchang1994@gmail.com" url="https://github.com/wuzuchang/SmallestWidthPlugin">吴祖昌</vendor>
 
     <description><![CDATA[
@@ -17,9 +17,16 @@
 
     <change-notes><![CDATA[
       <em>
+        <ul>
+       	1.0.8：<br>
+      <li>You can enter the range of generated dp and sp values, the default dp: -1080 - 1080, sp:5 - 10</li>
+      <li>可输入生成dp和sp值范围，默认dp:-1080 - 1080，sp:5 - 10</li>
+      </ul>
       <ul>
        	1.0.7：<br>
+      <li>Add SmallestWidth allows you to enter multiple folders separated by "," or "，", But "," and "，" cannot be used at the same time. Such as: 540,560 or 540，580</li>
       <li>Fix bug</li>
+      <li>Add SmallestWidth 可输入多个文件夹，用","或"，"分隔开，但是","和"，"不能同时使用。如：540,560或者540，560 </li>
       <li>修复bug</li>
       </ul>
       <ul>
