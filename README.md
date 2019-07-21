@@ -11,19 +11,14 @@
 ![Image text](images/smallestWidthUI.png)
 
     1.插件启动后可自主选择要在那个moudel下生成values-sw\<N\>dp文件夹;
-    2.通过Add smallestWidth添加需要的屏幕最小尺寸，如540，则会生成values-sw540dp文件夹
+    2.通过Add smallestWidth添加需要的屏幕最小尺寸，如540，则会生成values-sw540dp文件夹。可输入多个文件夹以“，”或“,”分隔，如：540，580或540,580
     3.Design Width 为你设计稿的尺寸，如设计稿最小宽度为1080px,则输入1080
 
 
-1.在values文件夹下
-> 如果没有dimens.xml文件，会以插件列表中最大的sw自动生成dimens.xml;
+1.在values和values-sw\<N\>dp文件夹下
+> 如果没有dimens.xml文件，则会自动生成dimens.xml;
 
-> 如果有dimens.xml文件，会判断是否有name相同的节点有则修改，没有则添加；
-
-2.values-sw\<N\>dp文件夹下
-> 如果values-sw\<N\>dp\\dimens.xml文件不存在,会自动生成values-sw\<N\>dp\\dimens.xml文件；
-
-> 如果values-sw\<N\>dp\\dimens.xml文件存在,会判断是否有name相同的节点有则修改，没有则添加；
+> 如果有dimens.xml文件，则会先删除原来的dimens.xml，再生成新的dimens.xml；
 
 生成后的文件夹如下图：
 ![Image text](images/GenerateDimens.png)
