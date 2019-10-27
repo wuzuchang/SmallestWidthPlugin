@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>com.wzc.sw.plugin</id>
     <name>SmallestWidth Dimens</name>
-    <version>1.0.8</version>
+    <version>1.1.0</version>
     <vendor email="wuzuchang1994@gmail.com" url="https://github.com/wuzuchang/SmallestWidthPlugin">吴祖昌</vendor>
 
     <description><![CDATA[
@@ -17,7 +17,12 @@
 
     <change-notes><![CDATA[
       <em>
-        <ul>
+      <ul>
+       	1.1.0：<br>
+      <li>In the case where the settings.grade file does not get the module name, you can manually enter the relative path of the module. For example: D:/android/MyProject/modulelist/moduleA, enter /modulelist/moduleA in the input box.</li>
+      <li>在settings.grade文件获取不到module name 的情况下，可手动输入module的相对路径。例如：D:/android/MyProject/modulelist/moduleA，输入框输入 /modulelist/moduleA 就行</li>
+      </ul>
+      <ul>
        	1.0.8：<br>
       <li>You can enter the range of generated dp and sp values, the default dp: -1080 - 1080, sp:5 - 10</li>
       <li>可输入生成dp和sp值范围，默认dp:-1080 - 1080，sp:5 - 10</li>

@@ -27,6 +27,8 @@ import java.util.regex.Pattern;
 
 
 public class SmallestWidthDialog extends JDialog {
+    private final String UNFUNDMODULE = "Specify the module relative path";
+    private final String UNFUNDMODULE_HINT = "ex:project/.../moduleName,input:/.../moduleName";
     private Project mProject;
     private JPanel contentPane;
     private JTextField designWidth;
@@ -41,6 +43,8 @@ public class SmallestWidthDialog extends JDialog {
     private JTextField mix_sp;
     private JTextField max_dp;
     private JTextField max_sp;
+    private JTextField tf_module_path;
+    private JPanel jp_module_path;
     private DefaultListModel folderModel;
     private ArrayList<Integer> defaultFoldData = new ArrayList<>(Arrays.asList(300, 320, 340, 360, 380, 400, 410, 420, 440, 460, 480, 500, 520));
     private int mixSP;
@@ -55,13 +59,13 @@ public class SmallestWidthDialog extends JDialog {
         setModal(true);
         getRootPane().setDefaultButton(btGenerateDirectory);
         setTitle("SmallestWidth Generator");
+        tf_module_path.addFocusListener(new JTextFieldHintListener(tf_module_path, UNFUNDMODULE_HINT));
         mix_sp.addFocusListener(new JTextFieldHintListener(mix_sp, "5"));
         max_sp.addFocusListener(new JTextFieldHintListener(max_sp, "100"));
         mix_dp.addFocusListener(new JTextFieldHintListener(mix_dp, "-1080"));
         max_dp.addFocusListener(new JTextFieldHintListener(max_dp, "1080"));
         getModuleName();
-
-        setFolderList();
+        refreshFolderList();
         cbModuleName.addItemListener(e -> selectModuleName());
         btGenerateDirectory.addActionListener(e -> generateDirectory());
         btAddSmallestWidth.addActionListener(e -> addSmallestWidth());
@@ -76,7 +80,13 @@ public class SmallestWidthDialog extends JDialog {
     }
 
     private void selectModuleName() {
-        setFolderList();
+        String moduleName = (String) cbModuleName.getSelectedItem();
+        if (moduleName != null && moduleName.equals(UNFUNDMODULE)) {
+            jp_module_path.setVisible(true);
+        } else {
+            jp_module_path.setVisible(false);
+        }
+        refreshFolderList();
     }
 
     private void getModuleName() {
@@ -89,7 +99,7 @@ public class SmallestWidthDialog extends JDialog {
         String settingGradlePath = basePath + File.separator + "settings.gradle";
         VirtualFile settingGradleFile = LocalFileSystem.getInstance().findFileByPath(settingGradlePath);
         if (settingGradleFile == null) {
-            cbModuleName.addItem("Unfound settings.gradle file");
+            cbModuleName.addItem("unfound settings.gradle file");
             return;
         }
         PsiFile settingGradlePsiFile = PsiManager.getInstance(mProject).findFile(settingGradleFile);
@@ -139,38 +149,60 @@ public class SmallestWidthDialog extends JDialog {
                 }
             }
         }
+        cbModuleName.addItem(UNFUNDMODULE);  //指定module路径，以便settings.gradle文件下获取不到ModuleName
     }
 
     /**
-     * 设置要生成的文件夹列表
+     * 初始化或者选择module后，刷新要生成的文件列表
      */
-    private void setFolderList() {
-        String moduleName = (String) cbModuleName.getSelectedItem();
-        String resFilePath = mProject.getBasePath() + File.separator + moduleName + File.separator + "src" + File.separator + "main" + File.separator + "res";
-        File resFile = new File(resFilePath);
-        if (!resFile.exists()) {
-            resFile.mkdirs();
+    private void refreshFolderList() {
+        if (folderModel==null){
+            folderModel = new DefaultListModel();
         }
-        // get the folder list
-        File[] fileArray = resFile.listFiles();
-        folderModel = new DefaultListModel();
-        List<String> fileNameList = new ArrayList<>();
-        if (fileArray == null || fileArray.length <= 0) {
+        String moduleName = (String) cbModuleName.getSelectedItem();
+        if (moduleName == null) {
+            return;
+        }
+        if (moduleName.equals(UNFUNDMODULE) && tf_module_path.getText().equals(UNFUNDMODULE_HINT)) {
+            folderModel.removeAllElements();
             for (int dp : defaultFoldData) {
                 folderModel.addElement("values-sw" + dp + "dp");
             }
-        } else {  //读取res文件夹列表
-            for (File file : fileArray) {
-                fileNameList.add(file.getName());
-            }
-            for (String fileName : fileNameList) {
-                if (fileName.contains("values-sw")) {
-                    folderModel.addElement(fileName);
+        } else {
+            String resFilePath = "";
+            if (moduleName.equals(UNFUNDMODULE)) {
+                String filePath = tf_module_path.getText();
+                boolean inputPath = Pattern.matches("^\\/(\\w+\\/?)+$", filePath);
+                if (inputPath) {
+                    resFilePath = mProject.getBasePath() + File.separator + moduleName + File.separator + "src" + File.separator + "main" + File.separator + "res";
                 }
+            }else {
+                resFilePath = mProject.getBasePath() + File.separator + moduleName + File.separator + "src" + File.separator + "main" + File.separator + "res";
             }
-            if (folderModel.getSize() <= 0) {
+            File resFile = new File(resFilePath);
+            if (!resFile.exists()) {
+                resFile.mkdirs();
+            }
+            // get the folder list
+            File[] fileArray = resFile.listFiles();
+            List<String> fileNameList = new ArrayList<>();
+            if (fileArray == null || fileArray.length <= 0) {
                 for (int dp : defaultFoldData) {
                     folderModel.addElement("values-sw" + dp + "dp");
+                }
+            } else {  //读取res文件夹列表
+                for (File file : fileArray) {
+                    fileNameList.add(file.getName());
+                }
+                for (String fileName : fileNameList) {
+                    if (fileName.contains("values-sw")) {
+                        folderModel.addElement(fileName);
+                    }
+                }
+                if (folderModel.getSize() <= 0) {
+                    for (int dp : defaultFoldData) {
+                        folderModel.addElement("values-sw" + dp + "dp");
+                    }
                 }
             }
         }
@@ -209,6 +241,7 @@ public class SmallestWidthDialog extends JDialog {
      * 生成
      */
     private void generateDirectory() {
+        addSmallestWidth();
         String moduleName = (String) cbModuleName.getSelectedItem();
         if (TextUtils.isEmpty(moduleName)) {
             Utils.showWarningDialog(mProject, "Not found Module", "Warning");
@@ -276,8 +309,18 @@ public class SmallestWidthDialog extends JDialog {
                     sw_dp = defaultFoldData.get(i);
                     swFolderName = "values-sw" + defaultFoldData.get(i) + "dp";
                 }
-
-                String filePath = mProject.getBasePath() + File.separator + moduleName + File.separator + "src" + File.separator + "main" + File.separator + "res" + File.separator + swFolderName + File.separator + "dimens.xml";
+                String filePath;
+                if (moduleName.equals(UNFUNDMODULE)) {
+                    String input_filePath = tf_module_path.getText();
+                    boolean inputPath = Pattern.matches("^\\/(\\w+\\/?)+$", input_filePath);
+                    if (inputPath) {
+                        filePath = mProject.getBasePath() + input_filePath + File.separator + "src" + File.separator + "main" + File.separator + "res" + File.separator + swFolderName + File.separator + "dimens.xml";
+                    } else {
+                        return;
+                    }
+                } else {
+                    filePath = mProject.getBasePath() + File.separator + moduleName + File.separator + "src" + File.separator + "main" + File.separator + "res" + File.separator + swFolderName + File.separator + "dimens.xml";
+                }
                 try {
                     File file = new File(filePath);
                     if (!file.getParentFile().exists()) {
@@ -285,9 +328,9 @@ public class SmallestWidthDialog extends JDialog {
                     }
                     boolean deleteFile = true;
                     if (file.exists()) {
-                        deleteFile=  file.delete();
+                        deleteFile = file.delete();
                     }
-                    if (deleteFile){
+                    if (deleteFile) {
                         file.createNewFile();
                         Document dimensDocument = DocumentHelper.createDocument();
                         Element resources = dimensDocument.addElement("resources");
@@ -311,7 +354,7 @@ public class SmallestWidthDialog extends JDialog {
                             resources.addElement("dimen").addAttribute("name", "sw_" + sp + "sp").addText(value + "sp");
                         }
                         Utils.writeXml(file, dimensDocument);
-                    }else {
+                    } else {
                         try {
                             SAXReader reader = new SAXReader();
                             BigDecimal smallestWidthdp = new BigDecimal(sw_dp);

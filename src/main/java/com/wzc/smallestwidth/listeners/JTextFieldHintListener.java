@@ -1,5 +1,7 @@
 package com.wzc.smallestwidth.listeners;
 
+import org.apache.http.util.TextUtils;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.FocusEvent;
@@ -31,10 +33,10 @@ public class JTextFieldHintListener implements FocusListener {
     }
 
     private void setText() {
-        String temp = textField.getText();
-        if (temp.equals("")) {
+        String temp = textField.getText().replaceAll(" ", "");
+        if (TextUtils.isEmpty(temp) && !hintText.startsWith("ex:")) {
             textField.setText(hintText);
-        } else if (temp.equals(hintText)) {
+        } else if (temp.equals(hintText.replaceAll(" ", ""))) {
             textField.setText("");
         }
         textColor = new Color(184, 207, 229);
