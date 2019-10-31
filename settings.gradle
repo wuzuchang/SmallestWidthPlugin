@@ -1,1 +1,7 @@
-include ':app' ':app1' ':app2' ':app3' ':lib' ':src'
+"sssssssssss"
+ssssss
+ssssss
+sssssss
+include ':app' ':app1' ':app2' ':app3'
+include 'lib'
+include 'src'

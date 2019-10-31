@@ -110,23 +110,23 @@ public class SmallestWidthDialog extends JDialog {
             return;
         }
         if (includeString.contains("include")) {
-            includeString = includeString.replaceAll("include", "");
-        }
-        if (includeString.contains(",")) {
-            includeString = includeString.replaceAll(",", "");
+            includeString = includeString.replaceAll("include", ",");
         }
         if (includeString.contains("\n")) {
-            includeString = includeString.replaceAll("\n", "");
+            includeString = includeString.replaceAll("\n", ",");
         }
         if (includeString.contains("'")) {
             includeString = includeString.replaceAll("'", "");
+        }
+        if (includeString.contains(":")) {
+            includeString = includeString.replaceAll(":", "");
         }
         if (includeString.contains(" ")) {
             includeString = includeString.replaceAll(" ", "");
         }
         String[] moduleNameList = new String[0];
-        if (includeString.contains(":")) {
-            moduleNameList = includeString.split(":");
+        if (includeString.contains(",")) {
+            moduleNameList = includeString.split(",");
         }
         VirtualFile baseVirtualFile = LocalFileSystem.getInstance().findFileByPath(basePath);
         if (baseVirtualFile == null) {
@@ -149,6 +149,9 @@ public class SmallestWidthDialog extends JDialog {
                 }
             }
         }
+        if (cbModuleName.getItemCount() == 0) {
+            jp_module_path.setVisible(true);
+        }
         cbModuleName.addItem(UNFUNDMODULE);  //指定module路径，以便settings.gradle文件下获取不到ModuleName
     }
 
@@ -156,7 +159,7 @@ public class SmallestWidthDialog extends JDialog {
      * 初始化或者选择module后，刷新要生成的文件列表
      */
     private void refreshFolderList() {
-        if (folderModel==null){
+        if (folderModel == null) {
             folderModel = new DefaultListModel();
         }
         String moduleName = (String) cbModuleName.getSelectedItem();
@@ -176,7 +179,7 @@ public class SmallestWidthDialog extends JDialog {
                 if (inputPath) {
                     resFilePath = mProject.getBasePath() + File.separator + moduleName + File.separator + "src" + File.separator + "main" + File.separator + "res";
                 }
-            }else {
+            } else {
                 resFilePath = mProject.getBasePath() + File.separator + moduleName + File.separator + "src" + File.separator + "main" + File.separator + "res";
             }
             File resFile = new File(resFilePath);
@@ -245,6 +248,10 @@ public class SmallestWidthDialog extends JDialog {
         String moduleName = (String) cbModuleName.getSelectedItem();
         if (TextUtils.isEmpty(moduleName)) {
             Utils.showWarningDialog(mProject, "Not found Module", "Warning");
+            return;
+        }
+        if (moduleName.equals(UNFUNDMODULE) && (TextUtils.isEmpty(tf_module_path.getText()) || UNFUNDMODULE_HINT.equals(tf_module_path.getText()))){
+            Utils.showWarningDialog(mProject, "Module relative path is null", "Warning");
             return;
         }
         String sDesignWidth = designWidth.getText().trim();
