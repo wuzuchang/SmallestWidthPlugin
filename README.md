@@ -15,6 +15,7 @@
     3.Design Width 为你设计稿的尺寸，如设计稿最小宽度为1080px,则输入1080
 
 右键可删除文件夹
+
 ![Image text](images/delete_folder.png)
 
 1.在values和values-sw\<N\>dp文件夹下
