@@ -45,12 +45,15 @@ public class SmallestWidthDialog extends JDialog {
     private JTextField max_sp;
     private JTextField tf_module_path;
     private JPanel jp_module_path;
-    private DefaultListModel folderModel;
+    private DefaultListModel<String> folderModel;
     private ArrayList<Integer> defaultFoldData = new ArrayList<>(Arrays.asList(300, 320, 340, 360, 380, 400, 410, 420, 440, 460, 480, 500, 520));
     private int mixSP;
     private int maxSP;
     private int mixDP;
     private int maxDP;
+    private JPopupMenu mDeletePopupMenu = null;
+    private JMenuItem mDeleteJMenuItem = null;
+    private String selectItem; //在列表中被选中的sw文件夹
 
     public SmallestWidthDialog(Project project) {
         if (project == null) return;
@@ -64,8 +67,46 @@ public class SmallestWidthDialog extends JDialog {
         max_sp.addFocusListener(new JTextFieldHintListener(max_sp, "100"));
         mix_dp.addFocusListener(new JTextFieldHintListener(mix_dp, "-1080"));
         max_dp.addFocusListener(new JTextFieldHintListener(max_dp, "1080"));
+
+        mDeletePopupMenu = new JPopupMenu();
+        mDeleteJMenuItem = new JMenuItem("delete");
+        mDeletePopupMenu.add(mDeleteJMenuItem);
+        mDeleteJMenuItem.addActionListener(e -> deleteSWFolder());
         getModuleName();
         refreshFolderList();
+        folderList.addMouseListener(new MouseListener() {
+            //点击鼠标事件
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+            }
+
+            // 按压鼠标
+            @Override
+            public void mousePressed(MouseEvent e) {
+                // 获取鼠标点击的项
+                folderList.setSelectedIndex(folderList.locationToIndex(e.getPoint()));
+                maybeShowPopup(e);
+            }
+
+            // 释放|松开鼠标
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                maybeShowPopup(e);
+            }
+
+            // 鼠标移入
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            // 鼠标移出
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
         cbModuleName.addItemListener(e -> selectModuleName());
         btGenerateDirectory.addActionListener(e -> generateDirectory());
         btAddSmallestWidth.addActionListener(e -> addSmallestWidth());
@@ -77,6 +118,13 @@ public class SmallestWidthDialog extends JDialog {
             }
         });
         contentPane.registerKeyboardAction(e -> dispose(), KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+    }
+
+    private void deleteSWFolder() {
+        if (TextUtils.isEmpty(selectItem)) {
+            return;
+        }
+        folderModel.removeElement(selectItem);
     }
 
     private void selectModuleName() {
@@ -160,7 +208,7 @@ public class SmallestWidthDialog extends JDialog {
      */
     private void refreshFolderList() {
         if (folderModel == null) {
-            folderModel = new DefaultListModel();
+            folderModel = new DefaultListModel<>();
         }
         String moduleName = (String) cbModuleName.getSelectedItem();
         if (moduleName == null) {
@@ -169,6 +217,9 @@ public class SmallestWidthDialog extends JDialog {
         if (moduleName.equals(UNFUNDMODULE) && tf_module_path.getText().equals(UNFUNDMODULE_HINT)) {
             folderModel.removeAllElements();
             for (int dp : defaultFoldData) {
+                if (folderModel.contains("values-sw" + dp + "dp")) {
+                    continue;
+                }
                 folderModel.addElement("values-sw" + dp + "dp");
             }
         } else {
@@ -191,6 +242,9 @@ public class SmallestWidthDialog extends JDialog {
             List<String> fileNameList = new ArrayList<>();
             if (fileArray == null || fileArray.length <= 0) {
                 for (int dp : defaultFoldData) {
+                    if (folderModel.contains("values-sw" + dp + "dp")) {
+                        continue;
+                    }
                     folderModel.addElement("values-sw" + dp + "dp");
                 }
             } else {  //读取res文件夹列表
@@ -199,11 +253,17 @@ public class SmallestWidthDialog extends JDialog {
                 }
                 for (String fileName : fileNameList) {
                     if (fileName.contains("values-sw")) {
+                        if (folderModel.contains(fileName)) {
+                            continue;
+                        }
                         folderModel.addElement(fileName);
                     }
                 }
                 if (folderModel.getSize() <= 0) {
                     for (int dp : defaultFoldData) {
+                        if (folderModel.contains("values-sw" + dp + "dp")) {
+                            continue;
+                        }
                         folderModel.addElement("values-sw" + dp + "dp");
                     }
                 }
@@ -250,7 +310,7 @@ public class SmallestWidthDialog extends JDialog {
             Utils.showWarningDialog(mProject, "Not found Module", "Warning");
             return;
         }
-        if (moduleName.equals(UNFUNDMODULE) && (TextUtils.isEmpty(tf_module_path.getText()) || UNFUNDMODULE_HINT.equals(tf_module_path.getText()))){
+        if (moduleName.equals(UNFUNDMODULE) && (TextUtils.isEmpty(tf_module_path.getText()) || UNFUNDMODULE_HINT.equals(tf_module_path.getText()))) {
             Utils.showWarningDialog(mProject, "Module relative path is null", "Warning");
             return;
         }
@@ -442,5 +502,16 @@ public class SmallestWidthDialog extends JDialog {
             }
         }
         return null;
+    }
+
+    //弹出菜单
+    private void maybeShowPopup(MouseEvent e) {
+        if (e.isPopupTrigger() && folderList.getSelectedIndex() != -1) {
+            //获取选择项的值
+            Object selected = folderList.getModel().getElementAt(folderList.getSelectedIndex());
+            selectItem = selected.toString();
+            System.out.println(selected);
+            mDeletePopupMenu.show(e.getComponent(), e.getX(), e.getY());
+        }
     }
 }
