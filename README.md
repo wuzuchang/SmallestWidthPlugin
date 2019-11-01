@@ -14,6 +14,8 @@
     2.通过Add smallestWidth添加需要的屏幕最小尺寸，如540，则会生成values-sw540dp文件夹。可输入多个文件夹以“，”或“,”分隔，如：540，580或540,580
     3.Design Width 为你设计稿的尺寸，如设计稿最小宽度为1080px,则输入1080
 
+右键可删除文件夹
+![Image text](images/delete_folder.png)
 
 1.在values和values-sw\<N\>dp文件夹下
 > 如果没有dimens.xml文件，则会自动生成dimens.xml;
