@@ -7,8 +7,8 @@ import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
-import com.wzc.smallestwidth.listeners.JTextFieldHintListener;
 import com.wzc.smallestwidth.util.Utils;
+import com.wzc.smallestwidth.listeners.JTextFieldHintListener;
 import org.apache.http.util.TextUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -24,7 +24,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 import java.util.regex.Pattern;
-
 
 public class SmallestWidthDialog extends JDialog {
     private final String UNFUNDMODULE = "Specify the module relative path";
@@ -43,6 +42,8 @@ public class SmallestWidthDialog extends JDialog {
     private JTextField mix_sp;
     private JTextField max_dp;
     private JTextField max_sp;
+    private JTextField prefix;
+    private JTextField suffix;
     private JTextField tf_module_path;
     private JPanel jp_module_path;
     private DefaultListModel<String> folderModel;
@@ -51,6 +52,8 @@ public class SmallestWidthDialog extends JDialog {
     private int maxSP;
     private int mixDP;
     private int maxDP;
+    private String prefixStr;
+    private String suffixStr;
     private JPopupMenu mDeletePopupMenu = null;
     private JMenuItem mDeleteJMenuItem = null;
     private String selectItem; //在列表中被选中的sw文件夹
@@ -67,6 +70,8 @@ public class SmallestWidthDialog extends JDialog {
         max_sp.addFocusListener(new JTextFieldHintListener(max_sp, "100"));
         mix_dp.addFocusListener(new JTextFieldHintListener(mix_dp, "-1080"));
         max_dp.addFocusListener(new JTextFieldHintListener(max_dp, "1080"));
+        prefix.addFocusListener(new JTextFieldHintListener(prefix, "sw_"));
+        suffix.addFocusListener(new JTextFieldHintListener(suffix, "dp"));
 
         mDeletePopupMenu = new JPopupMenu();
         mDeleteJMenuItem = new JMenuItem("delete");
@@ -355,6 +360,10 @@ public class SmallestWidthDialog extends JDialog {
         int folderModelSize = folderModel.getSize();
         BigDecimal max = new BigDecimal(100);//进度条最大值
         BigDecimal swFolderSize = new BigDecimal(folderModelSize);
+
+        prefixStr = TextUtils.isEmpty(prefix.getText().trim()) ? "sw_" : prefix.getText().trim();
+        suffixStr = TextUtils.isEmpty(suffix.getText().trim()) ? "dp" : suffix.getText().trim();
+
         new Thread(() -> {
             Enumeration<String> swEnumeration = folderModel.elements();
             defaultFoldData.clear();
@@ -409,16 +418,16 @@ public class SmallestWidthDialog extends JDialog {
                             BigDecimal bigDecimal = new BigDecimal(data);
                             double value = bigDecimal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
                             if (j < 0) {
-                                resources.addElement("dimen").addAttribute("name", "_sw_" + Math.abs(j) + "dp").addText(value + "dp");
+                                resources.addElement("dimen").addAttribute("name", "_" + prefixStr + Math.abs(j) + suffixStr).addText(value + "dp");
                             } else {
-                                resources.addElement("dimen").addAttribute("name", "sw_" + j + "dp").addText(value + "dp");
+                                resources.addElement("dimen").addAttribute("name", prefixStr + j + suffixStr).addText(value + "dp");
                             }
                         }
                         for (int sp = mixSP; sp <= maxSP; sp++) {
                             double sp_value = dp * sp;
                             BigDecimal bigDecimal = new BigDecimal(sp_value);
                             double value = bigDecimal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-                            resources.addElement("dimen").addAttribute("name", "sw_" + sp + "sp").addText(value + "sp");
+                            resources.addElement("dimen").addAttribute("name", prefixStr + sp + "sp").addText(value + "sp");
                         }
                         Utils.writeXml(file, dimensDocument);
                     } else {
@@ -436,9 +445,9 @@ public class SmallestWidthDialog extends JDialog {
                                 double value = bigDecimal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
                                 String name;
                                 if (j < 0) {
-                                    name = "_sw_" + Math.abs(j) + "dp";
+                                    name = "_"+prefixStr + Math.abs(j) + suffixStr;
                                 } else {
-                                    name = "sw_" + j + "dp";
+                                    name = prefixStr + j + suffixStr;
                                 }
                                 //判断当前有没有名字相同的 有就修改值，没有就新增
                                 Element element = distinct(name, resources);
@@ -452,7 +461,7 @@ public class SmallestWidthDialog extends JDialog {
                                 double sp_value = dp * sp;
                                 BigDecimal bigDecimal = new BigDecimal(sp_value);
                                 double value = bigDecimal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-                                String sp_name = "sw_" + sp + "sp";
+                                String sp_name = prefixStr + sp + suffixStr;
                                 //判断当前有没有名字相同的 有就修改值，没有就新增
                                 Element element = distinct(sp_name, resources);
                                 if (element != null) {
