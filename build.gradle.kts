@@ -4,8 +4,8 @@ plugins {
   id("org.jetbrains.intellij") version "1.14.1"
 }
 
-//group = "com.wzc.sw.plugin"
-//version = "1.3.2"
+group = "com.wzc.sw.plugin"
+version = "1.3.2"
 
 repositories {
   mavenCentral()
