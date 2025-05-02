@@ -2,14 +2,24 @@ package com.wzc.smallestwidth.util;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.psi.PsiFile;
 import org.dom4j.Document;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Utils {
+
+    private static final Pattern INCLUDE_PATTERN =
+            Pattern.compile("include\\s*[\\(]?\\s*['\"]([^'\"]+)['\"]");
+
+
     public static void showWarningDialog(Project project, String message, String title) {
         Messages.showMessageDialog(project, message, title, Messages.getWarningIcon());
     }
@@ -32,19 +42,28 @@ public class Utils {
             writer.write(document);
             // 立即写入
             writer.flush();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             try {
                 // 关闭操作
                 writer.close();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+    }
+
+
+    public static List<String> getIncludedModules(PsiFile settingsGradleFile) {
+        List<String> modules = new ArrayList<>();
+        String fileText = settingsGradleFile.getText();
+        Matcher matcher = INCLUDE_PATTERN.matcher(fileText);
+        while (matcher.find()) {
+            String moduleWithColon = matcher.group(1);
+            String module = moduleWithColon.replace(":", ""); // 去掉所有 ":"
+            modules.add(module);
+        }
+        return modules;
     }
 }

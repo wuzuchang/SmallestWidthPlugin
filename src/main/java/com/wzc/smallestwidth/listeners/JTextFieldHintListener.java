@@ -38,6 +38,8 @@ public class JTextFieldHintListener implements FocusListener {
             textField.setText(hintText);
         } else if (temp.equals(hintText.replaceAll(" ", ""))) {
             textField.setText("");
+        } else {
+            textField.setText(temp);
         }
         textColor = new Color(184, 207, 229);
         textField.setForeground(textColor);

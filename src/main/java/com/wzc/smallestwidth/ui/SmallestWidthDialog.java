@@ -1,6 +1,5 @@
 package com.wzc.smallestwidth.ui;
 
-
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.vfs.LocalFileSystem;
@@ -22,11 +21,13 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 public class SmallestWidthDialog extends JDialog {
-    private final String UNFUNDMODULE = "Specify the module relative path";
+    private final String UNFUNDMODULE = "Input module relative path";
     private final String UNFUNDMODULE_HINT = "ex:project/.../moduleName,input:/.../moduleName";
     private Project mProject;
     private JPanel contentPane;
@@ -47,7 +48,7 @@ public class SmallestWidthDialog extends JDialog {
     private JTextField tf_module_path;
     private JPanel jp_module_path;
     private DefaultListModel<String> folderModel;
-    private ArrayList<Integer> defaultFoldData = new ArrayList<>(Arrays.asList(300, 320, 340, 360, 380, 400, 410, 420, 440, 460, 480, 500, 520));
+    private ArrayList<Integer> defaultFoldData = new ArrayList<>(Arrays.asList(300, 320, 340, 360, 380, 400, 410, 420, 440, 460, 480, 500, 520, 540, 560));
     private int mixSP;
     private int maxSP;
     private int mixDP;
@@ -134,11 +135,7 @@ public class SmallestWidthDialog extends JDialog {
 
     private void selectModuleName() {
         String moduleName = (String) cbModuleName.getSelectedItem();
-        if (moduleName != null && moduleName.equals(UNFUNDMODULE)) {
-            jp_module_path.setVisible(true);
-        } else {
-            jp_module_path.setVisible(false);
-        }
+        jp_module_path.setVisible(moduleName != null && moduleName.equals(UNFUNDMODULE));
         refreshFolderList();
     }
 
@@ -149,45 +146,28 @@ public class SmallestWidthDialog extends JDialog {
             cbModuleName.addItem("The BasePath is null");
             return;
         }
-        String settingGradlePath = basePath + File.separator + "settings.gradle";
-        VirtualFile settingGradleFile = LocalFileSystem.getInstance().findFileByPath(settingGradlePath);
-        if (settingGradleFile == null) {
-            cbModuleName.addItem("unfound settings.gradle file");
+        VirtualFile settingsGradleFile = Stream.of("settings.gradle", "settings.gradle.kts")
+                .map(filename -> Paths.get(basePath, filename))
+                .map(path -> LocalFileSystem.getInstance().findFileByPath(path.toString()))
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
+
+        if (settingsGradleFile == null) {
+            cbModuleName.addItem("Could not find settings.gradle or settings.gradle.kts");
             return;
         }
-        PsiFile settingGradlePsiFile = PsiManager.getInstance(mProject).findFile(settingGradleFile);
+        PsiFile settingGradlePsiFile = PsiManager.getInstance(mProject).findFile(settingsGradleFile);
         if (settingGradlePsiFile == null) return;
-        String includeString = settingGradlePsiFile.getText();
-        if (includeString.isEmpty()) {
-            cbModuleName.addItem("settings.gradle file content is null");
-            return;
-        }
-        if (includeString.contains("include")) {
-            includeString = includeString.replaceAll("include", ",");
-        }
-        if (includeString.contains("\n")) {
-            includeString = includeString.replaceAll("\n", ",");
-        }
-        if (includeString.contains("'")) {
-            includeString = includeString.replaceAll("'", "");
-        }
-        if (includeString.contains(":")) {
-            includeString = includeString.replaceAll(":", "");
-        }
-        if (includeString.contains(" ")) {
-            includeString = includeString.replaceAll(" ", "");
-        }
-        String[] moduleNameList = new String[0];
-        if (includeString.contains(",")) {
-            moduleNameList = includeString.split(",");
-        }
+
+        List<String> moduleNameList = Utils.getIncludedModules(settingGradlePsiFile);
         VirtualFile baseVirtualFile = LocalFileSystem.getInstance().findFileByPath(basePath);
         if (baseVirtualFile == null) {
             cbModuleName.addItem("There are no files in the folder " + basePath);
             return;
         }
         VirtualFile[] virtualFiles = baseVirtualFile.getChildren();
-        if (virtualFiles == null || virtualFiles.length <= 0) {
+        if (virtualFiles == null || virtualFiles.length == 0) {
             cbModuleName.addItem("There are no files in the folder " + basePath);
             return;
         }
@@ -196,8 +176,11 @@ public class SmallestWidthDialog extends JDialog {
                 continue;
             }
             String fileName = virtualFile.getName();
-            for (int i = 1; i < moduleNameList.length; i++) {
-                if (moduleNameList[i].trim().equals(fileName)) {
+            for(String moduleName : moduleNameList) {
+                if (moduleName==null){
+                    continue;
+                }
+                if (moduleName.trim().equals(fileName)) {
                     cbModuleName.addItem(fileName);
                 }
             }

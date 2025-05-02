@@ -19,6 +19,7 @@ repositories {
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin.html
 dependencies {
   implementation("org.dom4j:dom4j:2.1.4")
+
   intellijPlatform {
     create("IC", "2024.2.5")
 
