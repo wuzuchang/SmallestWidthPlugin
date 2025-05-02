@@ -1,0 +1,20 @@
+<svg width="40" height="40" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="paint0_linear" x1="-0.03" x2="1.06" y1="0.03" y2="1.12">
+            <stop offset="0.16" stop-color="#3BEA62"/>
+            <stop offset="0.54" stop-color="#3C99CC"/>
+            <stop offset="0.94" stop-color="#6B57FF"/>
+        </linearGradient>
+        <linearGradient id="svg_8" x1="1" x2="0" y1="1" y2="0">
+            <stop id="jq_stop_9578" offset="0.01" stop-color="#00ff7f" stop-opacity="1"/>
+            <stop id="jq_stop_6409" offset="1" stop-color="#0000bf"/>
+            <stop id="jq_stop_559" offset="1" stop-color="#ffff40"/>
+            <stop id="jq_stop_9893" offset="1.04" stop-color="0" stop-opacity="0"/>
+        </linearGradient>
+    </defs>
+    <g class="layer">
+        <title>Layer 1</title>
+        <path d="m32.08,7.94l0,-3.94l-8.06,0l0,3.99l-7.99,0l0,-3.99l-8.11,0l0,3.94l-3.92,0l0,28.06l12,0l0,-4c0.01,-1.05 0.43,-2.07 1.18,-2.82c0.75,-0.75 1.76,-1.17 2.82,-1.17c1.06,0 2.07,0.42 2.82,1.17c0.75,0.75 1.17,1.77 1.18,2.82l0,4l12,0l0,-28.06l-3.92,0z" fill="url(#paint0_linear)" id="svg_1"/>
+        <text fill="url(#svg_8)" font-family="Helvetica" font-size="24" id="svg_4" stroke-width="0" text-anchor="middle" x="20" xml:space="preserve" y="26.4">sw</text>
+    </g>
+</svg>
